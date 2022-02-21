@@ -5,35 +5,80 @@ import React, { Component } from 'react';
 // После этого экспортируется в самый главный index
 class App extends Component {
   state = {
-    posts: [],
-    loading: true,
-    comments: []
-  };  
+    count: 0,
+    btnStart: true,
+    btnStop: false,
+    countInterval: null
+  };
+  start = () => {
+    this.setState({btnStart: false, btnStop: true})
+    // start taimer
+    let countInterval = setInterval(() => {
+      this.setState({count: +this.state.count + 1})
+    },1000);
+    this.setState({countInterval: countInterval})
 
+  }
+  stop = () => {
+    this.setState({btnStart: true, btnStop: false});
+    clearInterval(this.state.countInterval);
+  }
+
+  reset = () => {
+    this.setState({count: 0});
+    this.setState({btnStart: true, btnStop: false});
+    clearInterval(this.state.countInterval);
+  }
 
   componentDidMount() {
-    console.log('componentDidMount');
-    fetch('https://jsonplaceholder.typicode.com/posts')
-      .then(response => response.json())
-      .then(data => this.setState({posts: data, loading: false}))
+    console.log('first');
+    this.setState({count: localStorage.getItem('count')})
   }
 
   componentDidUpdate() {
-    console.log('componentDidUpdate');
+    localStorage.setItem('count', this.state.count)
   }
 
-  componentWillUnmount() {
-    console.log('componentWillUnmount');
-  }
+  // componentWillUnmount() {
+  //   console.log('componentWillUnmount');
+  // }
 
 
 
   render() {
+    console.log();
     return (
       <div className="App">
-        {this.state.loading ? 
-        <h3>Loading...</h3> : 
-        <h3>{this.state.posts.length} was loaded</h3>}
+        <h1 className='text'>React Таймер</h1>
+        <span className="text big-size ">{this.state.count}</span>
+        <div className='center'>
+        {/* btn start */}
+          <button
+          onClick={this.start}
+          style={
+            {display: this.state.btnStart ? 'inline-block' : 'none'}
+          }
+          className='btn big-size'>
+          Start
+          </button>
+
+        {/* btn stop */}
+          <button
+          onClick={this.stop}
+          style={
+            {display: this.state.btnStop ? 'inline-block' : 'none'}
+          }
+          className='btn big-size'>
+          Stop
+          </button>
+
+        {/* Btn reset */}
+          <button
+          onClick={this.reset}
+          className='btn big-size'>
+          Reset
+          </button>
+        </div>
       </div>
     );
   }
