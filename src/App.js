@@ -10,6 +10,8 @@ class App extends Component {
     btnStop: false,
     countInterval: null
   };
+
+  // function btn start
   start = () => {
     this.setState({btnStart: false, btnStop: true})
     // start taimer
@@ -17,31 +19,36 @@ class App extends Component {
       this.setState({count: +this.state.count + 1})
     },1000);
     this.setState({countInterval: countInterval})
-
   }
+
+  // function btn stop
   stop = () => {
     this.setState({btnStart: true, btnStop: false});
     clearInterval(this.state.countInterval);
   }
 
+  // function btn reset
   reset = () => {
     this.setState({count: 0});
     this.setState({btnStart: true, btnStop: false});
     clearInterval(this.state.countInterval);
   }
 
+
   componentDidMount() {
-    console.log('first');
-    this.setState({count: localStorage.getItem('count')})
+    const countLocalStorage = localStorage.getItem('count');
+    if(countLocalStorage){
+      this.setState({count: countLocalStorage})
+    }   
   }
 
   componentDidUpdate() {
     localStorage.setItem('count', this.state.count)
   }
 
-  // componentWillUnmount() {
-  //   console.log('componentWillUnmount');
-  // }
+  componentWillUnmount() {
+    console.log('DOM');
+  }
 
 
 
@@ -50,8 +57,9 @@ class App extends Component {
     return (
       <div className="App">
         <h1 className='text'>React Таймер</h1>
-        <span className="text big-size ">{this.state.count}</span>
+        <span className="text big-size">{this.state.count}</span>
         <div className='center'>
+
         {/* btn start */}
           <button
           onClick={this.start}
@@ -78,6 +86,7 @@ class App extends Component {
           className='btn big-size'>
           Reset
           </button>
+
         </div>
       </div>
     );
